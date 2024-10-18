@@ -1,4 +1,6 @@
 # :basketball: NBA 2023 Rookie Of The Year Dashboard :basketball:
+see a live demo [here](https://roty-dashboard.streamlit.app/) 
+
 ## NBA Rookie Data Scraper
 
 This Python script scrapes NBA rookie data from [Tankathon](https://www.tankathon.com) and retrieves player statistics from the NBA API. The data is saved in a CSV file for further analysis.
