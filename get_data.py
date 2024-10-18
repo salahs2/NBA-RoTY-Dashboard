@@ -54,6 +54,7 @@ class Data:
                 #print(f"name: {player["full_name"]} id: {player['id']}")
                 try:   
                     temp = playercareerstats.PlayerCareerStats(player_id=player['id']).get_data_frames()
+                    temp[0]["PLAYER_ID"] = player["full_name"]
                     frames.append(temp[0])
                     print(f"iteration: {count}")
                     count+=1
@@ -69,4 +70,4 @@ data = Data(year='2023')
 
 data.run()
 
-print(data.df.head())
+
