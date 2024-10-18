@@ -1,11 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
-from pathlib import Path
-from faker import Faker
-from PIL import Image
-from io import BytesIO
-import base64
+
 # Set the directory where your images are stored
 image_directory = "C:/Users/salah/GitHub/NBA-RoTY-Dashboard/assets/Teams"
 
