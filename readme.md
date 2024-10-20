@@ -1,4 +1,4 @@
-# :basketball: NBA 2023 Rookie Of The Year Dashboard :basketball:
+# :basketball: NBA Rookie Of The Year Dashboard :basketball:
 see a live demo [here](https://roty-dashboard.streamlit.app/) 
 
 ## NBA Rookie Data Scraper
