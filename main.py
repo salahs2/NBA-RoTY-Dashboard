@@ -66,7 +66,7 @@ with button_col4:
     run_button = st.button("Run", type="primary", use_container_width=True)
 
 if run_button:
-    df = pd.read_csv(f"data\\nba_rookie_data_{option}")
+    df = pd.read_csv(f"data/nba_rookie_data_{option}")
     df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
 
     st.data_editor(
