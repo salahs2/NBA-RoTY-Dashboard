@@ -46,26 +46,59 @@ df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
 
 st.set_page_config(layout="wide")
 st.title(":basketball: NBA 2023 Rookie Of The Year Dashboard :basketball:")
-st.data_editor(
-    df,
-    column_config={
-        "TEAM_ABBREVIATION" : st.column_config.ImageColumn(
-            ""
-        ),
-        "PLAYER_ID" : "Player Name",
-        "PLAYER_AGE" : "Age",
-        "GP" : "Games Played",
-        "GS" : "Games something?",
-        "MIN" : "Minutes Played",
-        "FGM" : "Field Goals Made",
-        "FGA" : "Field Goals Attempted",
-        "FG_PCT" : "Field Goal %",
-        "FG3M" : "3-Pointers Made",
-        "FG3A" : "3-Pointers Attempted",
-        "FG3_PCT" : "Field Goal %"
-    },
-    column_order=("TEAM_ABBREVIATION", "PLAYER_ID", "SEASON_ID", "PLAYER_AGE", "GP", "GS", "MIN", "FGM", "FGA", "FG_PCT", "FG3M", "FG3A", "FG3_PCT", "FTM", "FTA", "FT_PCT", "OREB", "DREB", "REB", "AST", "STL", "BLK", "TOV", "PF", "PTS"),
-    width= 1500,
-    hide_index=True
-    
-)
+years_col1, years_col2, years_col3, years_col4 = st.columns(4)
+button_col1, button_col2, button_col3, button_col4 = st.columns(4)
+with years_col4:
+    option = st.selectbox(
+        "",
+        ("2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"),
+        placeholder="2023"
+    )
+with button_col1:  
+    if option != "2024":
+        st.write("")
+        st.write("Year Selected: ", option)
+    else:
+        st.write("")
+        st.write("Warning 2024 data is not available at this time")
+
+with button_col4: 
+    run_button = st.button("Run", type="primary", use_container_width=True)
+
+if run_button:
+    df = pd.read_csv(f"data\\nba_rookie_data_{option}")
+    df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
+
+    st.data_editor(
+        df,
+        column_config={
+            "TEAM_ABBREVIATION" : st.column_config.ImageColumn(
+                ""
+            ),
+            "PLAYER_ID" : "Player Name",
+            "PLAYER_AGE" : "Age",
+            "GP" : "Games Played",
+            "GS" : "Games Started",
+            "MIN" : "Minutes Played",
+            "FGM" : "Field Goals Made",
+            "FGA" : "Field Goals Attempted",
+            "FG_PCT" : "Field Goal %",
+            "FG3M" : "3-Pointers Made",
+            "FG3A" : "3-Pointers Attempted",
+            "FG3_PCT" : "Field Goal %",
+            "FTM" : "Free Throws Made",
+            "OREB" : "Offensive Rebounds",
+            "DREB" : "Defensive Rebounds",
+            "REB" : "Rebounds",
+            "AST" : "Assists", 
+            "STL" : "Steals",
+            "BLK" : "Blocks",
+            "TOV" : "Turnovers",
+            "PF" : "Personal Fouls",
+            "PTS" : "Points"
+        },
+        column_order=("TEAM_ABBREVIATION", "PLAYER_ID", "SEASON_ID", "PTS", "REB", "AST", "STL", "BLK", "TOV",  "PLAYER_AGE", "GP", "GS", "MIN", "FGM", "FGA", "FG_PCT", "FG3M", "FG3A", "FG3_PCT", "FTM", "FTA", "FT_PCT", "OREB", "DREB", "PF"),
+        width= 1500,
+        hide_index=True
+        
+    )

@@ -37,7 +37,7 @@ class Data:
                         count = "Undrafted"
         return rookies
     def save_data_to_csv(self,):
-        self.data.to_csv("nba_rookie_data", index=False)
+        self.data.to_csv(f"data\\nba_rookie_data_{self.year}", index=False)
 
     def run(self): 
         rookies = self.get_rookies()
@@ -55,8 +55,12 @@ class Data:
                 try:   
                     temp = playercareerstats.PlayerCareerStats(player_id=player['id']).get_data_frames()
                     temp[0]["PLAYER_ID"] = player["full_name"]
-                    frames.append(temp[0])
-                    print(f"iteration: {count}")
+                    temp = temp[0]
+                    #mask = temp['SEASON_ID'] == f"{self.year}-{str(int(self.year)+1)[2:]}"
+                    temp = temp.drop(temp[temp['SEASON_ID'] != f"{self.year}-{str(int(self.year)+1)[2:]}"].index)
+                    #temp = temp.drop(temp[temp['SEASON_ID'] == f"{self.year}-{str(int(self.year)+1)[2:]}"])
+                    frames.append(temp)
+                    print(f"{self.year}, iteration: {count}")
                     count+=1
                     time.sleep(1)
                 except requests.Timeout:
@@ -66,8 +70,11 @@ class Data:
         self.data['PLAYER_ID'].map(rookies)
         self.save_data_to_csv()
 
-data = Data(year='2023')
 
-data.run()
+years = ["2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"]
+for i in years:
+    data = Data(year=i)
+
+    data.run()
 
 
