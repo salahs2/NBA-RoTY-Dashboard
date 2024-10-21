@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-from model import roty
 # Set the directory where your images are stored
 image_directory = "C:/Users/salah/GitHub/NBA-RoTY-Dashboard/assets/Teams"
 
@@ -67,6 +66,22 @@ with years_col2:
 with button_col1: 
     run_button = st.button("Run", type="primary", use_container_width=True)
 
+roty = {
+    "2023" : "Victor Wembanyama",
+    "2022" :"Paolo Banchero" ,
+    "2021" :"Scottie Barnes" ,
+    "2020" :"LaMelo Ball" ,
+    "2019" :"Ja Morant" ,
+    "2018" :"Luka Doncic" ,
+    "2017" :"Ben Simmons" ,
+    "2016" :"Malcolm Brogdon" ,
+    "2015" :"Karl-Anthony Towns" ,
+    "2014" :"Andrew Wiggins" ,
+    "2013" :"Michael Carter-Williams" ,
+    "2012" :"Damian Lillard" ,
+    "2011" :"Kyrie Irving" ,
+}
+
 if run_button:
     df = pd.read_csv(f"data/nba_rookie_data_{option}")
     df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
@@ -107,13 +122,16 @@ if run_button:
         
     )
 
-winnercol1, winnercol2 = st.columns(2)
-model = pd.read_csv("data/Model_Data", index_col=False)
-with winnercol1:
-    st.header("Most Likely ROTY Winner (BASED ON MODEL)")
-    model_winners = model[(model['is_roty'] == 'Yes') & (model['SEASON_ID'] == df['SEASON_ID'][0])]
-    st.subheader(model_winners["PLAYER_ID"].iloc[0])
+    winnercol1, winnercol2 = st.columns(2)
+    model = pd.read_csv("data/Model_Data", index_col=False)
+    with winnercol1:
+        st.header("Most Likely ROTY Winner (BASED ON MODEL)")
+        model_winners = model[(model['is_roty'] == 'Yes') & (model['SEASON_ID'] == df['SEASON_ID'][0])]
+        if not model_winners.empty:
+            st.subheader(model_winners["PLAYER_ID"].iloc[0])
+        else:
+            st.subheader("No data available for the selected year")
 
-with winnercol2:
-    st.subheader("Actual ROTY Winner")
-    st.subheader(df[df['PLAYER_ID'].isin(roty.keys())]["PLAYER_ID"].iloc[0])
+    with winnercol2:
+        st.subheader("Actual ROTY Winner")
+        st.subheader(roty[option])
