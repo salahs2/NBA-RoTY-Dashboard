@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
-
+from model import roty
 # Set the directory where your images are stored
 image_directory = "C:/Users/salah/GitHub/NBA-RoTY-Dashboard/assets/Teams"
 
@@ -46,15 +46,17 @@ df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
 
 st.set_page_config(layout="wide")
 st.title(":basketball: NBA 2023 Rookie Of The Year Dashboard :basketball:")
+st.subheader("Hint: Select a year and press run!")
 years_col1, years_col2, years_col3, years_col4 = st.columns(4)
 button_col1, button_col2, button_col3, button_col4 = st.columns(4)
-with years_col4:
+option_col1, option_col2, option_col3, option_col4 = st.columns(4)
+with years_col1:
     option = st.selectbox(
         "",
         ("2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"),
         placeholder="2023"
     )
-with button_col1:  
+with years_col2:
     if option != "2024":
         st.write("")
         st.write("Year Selected: ", option)
@@ -62,7 +64,7 @@ with button_col1:
         st.write("")
         st.write("Warning 2024 data is not available at this time")
 
-with button_col4: 
+with button_col1: 
     run_button = st.button("Run", type="primary", use_container_width=True)
 
 if run_button:
@@ -95,6 +97,8 @@ if run_button:
             "BLK" : "Blocks",
             "TOV" : "Turnovers",
             "PF" : "Personal Fouls",
+            "FTA" : "Free Throws Attempted",
+            "FT_PCT" : "Free Throw %",
             "PTS" : "Points"
         },
         column_order=("TEAM_ABBREVIATION", "PLAYER_ID", "SEASON_ID", "PTS", "REB", "AST", "STL", "BLK", "TOV",  "PLAYER_AGE", "GP", "GS", "MIN", "FGM", "FGA", "FG_PCT", "FG3M", "FG3A", "FG3_PCT", "FTM", "FTA", "FT_PCT", "OREB", "DREB", "PF"),
@@ -102,3 +106,14 @@ if run_button:
         hide_index=True
         
     )
+
+winnercol1, winnercol2 = st.columns(2)
+model = pd.read_csv("data/Model_Data", index_col=False)
+with winnercol1:
+    st.header("Most Likely ROTY Winner (BASED ON MODEL)")
+    model_winners = model[(model['is_roty'] == 'Yes') & (model['SEASON_ID'] == df['SEASON_ID'][0])]
+    st.subheader(model_winners["PLAYER_ID"].iloc[0])
+
+with winnercol2:
+    st.subheader("Actual ROTY Winner")
+    st.subheader(df[df['PLAYER_ID'].isin(roty.keys())]["PLAYER_ID"].iloc[0])
