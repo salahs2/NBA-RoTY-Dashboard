@@ -44,7 +44,7 @@ images = {
 df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
 
 st.set_page_config(layout="wide")
-st.title(":basketball: NBA 2023 Rookie Of The Year Dashboard :basketball:")
+st.title(":basketball: NBA Rookie Of The Year Dashboard :basketball:")
 st.subheader("Hint: Select a year and press run!")
 years_col1, years_col2, years_col3, years_col4 = st.columns(4)
 button_col1, button_col2, button_col3, button_col4 = st.columns(4)
