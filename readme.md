@@ -21,7 +21,7 @@ pip install requests beautifulsoup4 pandas numpy nba_api streamlit
 This project is a Streamlit-based web application that visualizes NBA rookie data for the 2023 season. It loads and displays a dataset of NBA rookies along with their career stats and enhances the presentation by associating team logos with each player.
 ### Overview
 
-The **NBA 2023 Rookie of the Year Dashboard** allows users to explore rookie performance statistics for the 2023 season. It features:
+The **NBA Rookie of the Year Dashboard** allows users to explore rookie performance statistics for the 2023 season. It features:
 
 - Display of key rookie stats such as games played, minutes, field goals, and more.
 - Team logos displayed alongside the rookie's data for a visually engaging experience.
