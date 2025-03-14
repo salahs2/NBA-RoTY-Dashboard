@@ -1,11 +1,14 @@
 import streamlit as st
 import pandas as pd
+import streamlit as st
+import pandas as pd
+import plotly.express as px
 import os
 # Set the directory where your images are stored
 image_directory = "C:/Users/salah/GitHub/NBA-RoTY-Dashboard/assets/Teams"
 
 # Load the CSV file
-df = pd.read_csv("nba_rookie_data")
+df2 = pd.read_csv("nba_rookie_data")
 
 images = {
     
@@ -41,32 +44,13 @@ images = {
     "SAS" : "https://upload.wikimedia.org/wikipedia/en/a/a2/San_Antonio_Spurs.svg"
 }
 # Create a new column with full image paths
-df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
+df2['TEAM_ABBREVIATION'] = df2['TEAM_ABBREVIATION'].map(images)
 
 st.set_page_config(layout="wide")
-st.title(":basketball: NBA Rookie Of The Year Dashboard :basketball:")
-st.subheader("Hint: Select a year and press run!")
-years_col1, years_col2, years_col3, years_col4 = st.columns(4)
-button_col1, button_col2, button_col3, button_col4 = st.columns(4)
-option_col1, option_col2, option_col3, option_col4 = st.columns(4)
-with years_col1:
-    option = st.selectbox(
-        "",
-        ("2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"),
-        placeholder="2023"
-    )
-with years_col2:
-    if option != "2024":
-        st.write("")
-        st.write("Year Selected: ", option)
-    else:
-        st.write("")
-        st.write("Warning 2024 data is not available at this time")
 
-with button_col1: 
-    run_button = st.button("Run", type="primary", use_container_width=True)
 
 roty = {
+    "2024" : "Undetermined" , 
     "2023" : "Victor Wembanyama",
     "2022" :"Paolo Banchero" ,
     "2021" :"Scottie Barnes" ,
@@ -81,13 +65,41 @@ roty = {
     "2012" :"Damian Lillard" ,
     "2011" :"Kyrie Irving" ,
 }
+year = {
+    '2024-25' : '2024',
+    '2023-24' : '2023',
+    '2022-23' : '2022',
+    '2021-22' : '2021',
+    '2020-21' : '2020',
+    '2019-20' : '2019',
+    '2018-19' : '2018',
+    '2017-18' : '2017',
+    '2016-17' : '2016',
+    '2015-16' : '2015'
+}
 
-if run_button:
-    df = pd.read_csv(f"data/nba_rookie_data_{option}")
-    df['TEAM_ABBREVIATION'] = df['TEAM_ABBREVIATION'].map(images)
+# Load predictions
+def load_data():
+    file_path = "data/Predicted_ROTY.csv"
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except FileNotFoundError:
+        st.error("Predicted_ROTY.csv not found. Run the model first!")
+        return None
+
+df = load_data()
+
+if df is not None:
+    st.title("NBA Rookie of the Year Predictions 🏀")
+    
+    # Select Year
+    year_selected = st.selectbox("Select Year:", sorted(df['year'].unique(), reverse=True))
+    df2 = pd.read_csv(f"data/nba_rookie_data_{year[year_selected]}")
+    df2['TEAM_ABBREVIATION'] = df2['TEAM_ABBREVIATION'].map(images)
 
     st.data_editor(
-        df,
+        df2,
         column_config={
             "TEAM_ABBREVIATION" : st.column_config.ImageColumn(
                 ""
@@ -121,17 +133,23 @@ if run_button:
         hide_index=True
         
     )
-
-    winnercol1, winnercol2 = st.columns(2)
-    model = pd.read_csv("data/Model_Data", index_col=False)
-    with winnercol1:
-        st.header("Most Likely ROTY Winner (BASED ON MODEL)")
-        model_winners = model[(model['is_roty'] == 'Yes') & (model['SEASON_ID'] == df['SEASON_ID'][0])]
-        if not model_winners.empty:
-            st.subheader(model_winners["PLAYER_ID"].iloc[0])
-        else:
-            st.subheader("No data available for the selected year")
-
-    with winnercol2:
-        st.subheader("Actual ROTY Winner")
-        st.subheader(roty[option])
+    # Get Prediction for Selected Year
+    roty_player = df[df['year'] == year_selected]
+    if not roty_player.empty:
+        player_id = roty_player['PLAYER_ID'].values[0]
+        team = roty_player['TEAM_ABBREVIATION'].values[0]
+        prob = roty_player['roty_probability'].values[0]
+        
+        st.subheader(f"Predicted Rookie of the Year for {year_selected}")
+        st.write(f"🏆 **Player ID:** {player_id}")
+        st.write(f"🏀 **Team:** {team}")
+        st.write(f"📊 **ROTY Probability:** {prob:.2%}")
+    else:
+        st.warning(f"No prediction found for {year_selected}.")
+    
+    # # Plot Top Players per Year
+    # st.subheader("ROTY Probability by Year")
+    # fig = px.bar(df, x='year', y='roty_probability', hover_data=['PLAYER_ID', 'TEAM_ABBREVIATION'],
+    #              text='roty_probability', labels={'roty_probability': 'Probability'},
+    #              title="Top Predicted Rookies by Year")
+    # st.plotly_chart(fig)

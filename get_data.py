@@ -38,7 +38,7 @@ class Data:
         return rookies
     def save_data_to_csv(self,):
         self.data.to_csv(f"data\\nba_rookie_data_{self.year}", index=False)
-
+    
     def run(self): 
         rookies = self.get_rookies()
 
@@ -71,7 +71,7 @@ class Data:
         self.save_data_to_csv()
 
 
-years = ["2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"]
+years = ["2022"]
 for i in years:
     data = Data(year=i)
 
